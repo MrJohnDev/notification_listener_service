@@ -17,14 +17,14 @@ dependencies:
 
 Inside AndroidManifest add this to bind notification service with your application
 
-```
+```xml
 
 <service android:label="notifications" android:name="notification.listener.service.NotificationListener"
-android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" android:exported="true">
-        <intent-filter>
-            <action android:name="android.service.notification.NotificationListenerService" />
-        </intent-filter>
-    </service>
+  android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" android:exported="true">
+  <intent-filter>
+    <action android:name="android.service.notification.NotificationListenerService" />
+  </intent-filter>
+</service>
 
 
 ```

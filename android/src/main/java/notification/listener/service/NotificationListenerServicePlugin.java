@@ -51,28 +51,33 @@ public class NotificationListenerServicePlugin implements FlutterPlugin, Activit
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         pendingResult = result;
-        if (call.method.equals("isPermissionGranted")) {
-            result.success(isPermissionGranted(context));
-        } else if (call.method.equals("requestPermission")) {
-            Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
-            mActivity.startActivityForResult(intent, REQUEST_CODE_FOR_NOTIFICATIONS);
-        } else if (call.method.equals("sendReply")) {
-            final String message = call.argument("message");
-            final int notificationId = call.argument("notificationId");
+        switch (call.method) {
+            case "isPermissionGranted":
+                result.success(isPermissionGranted(context));
+                break;
+            case "requestPermission":
+                Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
+                mActivity.startActivityForResult(intent, REQUEST_CODE_FOR_NOTIFICATIONS);
+                break;
+            case "sendReply":
+                final String message = call.argument("message");
+                final int notificationId = call.argument("notificationId");
 
-            final Action action = ActionCache.cachedNotifications.get(notificationId);
-            if (action == null) {
-                result.error("Notification", "Can't find this cached notification", null);
-            }
-            try {
-                action.sendReply(context, message);
-                result.success(true);
-            } catch (PendingIntent.CanceledException e) {
-                result.success(false);
-                e.printStackTrace();
-            }
-        } else {
-            result.notImplemented();
+                final Action action = ActionCache.cachedNotifications.get(notificationId);
+                if (action == null) {
+                    result.error("Notification", "Can't find this cached notification", null);
+                }
+                try {
+                    action.sendReply(context, message);
+                    result.success(true);
+                } catch (PendingIntent.CanceledException e) {
+                    result.success(false);
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                result.notImplemented();
+                break;
         }
     }
 
